@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer-array
+        name="min_word_size">
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </integer-array>
+    <integer-array
+        name="max_word_size">
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </integer-array>
+    <integer-array
+        name="game_time">
+        <item>1</item>
+        <item>2</item>
+        <item>5</item>
+    </integer-array>
+    <string-array
+        name="words">
+        <item>світ</item>
+        <item>немає</item>
+        <item>світло</item>
+        <item>енергія</item>
+        <item>потрібна</item>
+    </string-array>
+</resources>

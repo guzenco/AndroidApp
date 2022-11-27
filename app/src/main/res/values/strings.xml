@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Лабораторна робота №1</string>
+    <string name="start_button">Розпочати гру</string>
+    <string name="setting_button">Налаштування</string>
+    <string name="creator">Розробник</string>
+    <string name="creator_name">Гузенко Д. Г.</string>
+    <string name="min_word_size">Мінімальний розмір слова</string>
+    <string name="max_word_size">Максимальний розмір слова</string>
+    <string name="game_time">Тривалість гри</string>
+    <string name="n_mins">%1$d хв</string>
+    <string name="n_letters">%1$d</string>
+    <string name="save">Зберегти</string>
+    <string name="n_words">%1$d</string>
+    <string name="guessed_words">Вгадано слів</string>
+    <string name="n_guessed_words">Ви вгадали %1$d слів</string>
+    <string name="n_s">%1$dс</string>
+    <string name="yes">Добре</string>
+    <string name="null_letter">*</string>
+    <string name="guessed">Вгадано</string>
+</resources>
