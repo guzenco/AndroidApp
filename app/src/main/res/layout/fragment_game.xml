@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.main.GameFragment">
 
@@ -10,53 +12,52 @@
         android:id="@+id/time_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center|top"
         tools:text="@string/n_s"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:paddingTop="10dp"
         android:textColor="@color/time_left"
         android:textSize="40sp"/>
 
-    <TextView
-        android:id="@+id/guessed_words"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom">
+
+        <TextView
+            android:id="@+id/guessed_words_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="@string/guessed_words"
+            android:textSize="20sp"/>
+        <TextView
+            android:id="@+id/guessed_words"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/guessed_words_tv"
+            android:layout_centerHorizontal="true"
+            tools:text="@string/n_words"
+            android:textColor="@color/n_words"
+            android:textSize="40sp"/>
+
+    </RelativeLayout>>
+
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="@string/n_words"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:paddingBottom="10dp"
-        android:textColor="@color/n_words"
-        android:textSize="40sp"/>
+        android:layout_gravity="center">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/guessed_words"
-        app:layout_constraintBottom_toTopOf="@id/guessed_words"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:textSize="20sp"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/line_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/line_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/line_2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/line_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/line_1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="10dp"/>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/line_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/line_1"
+            android:layout_centerHorizontal="true"/>
+    </RelativeLayout>
+</FrameLayout>
