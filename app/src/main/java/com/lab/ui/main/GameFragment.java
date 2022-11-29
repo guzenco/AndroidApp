@@ -1,23 +1,35 @@
-package com.lab;
+package com.lab.ui.main;
+
+import androidx.appcompat.app.AlertDialog;
+
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lab.R;
 import com.lab.objects.Letter;
 import com.lab.objects.LetterAddapter;
+import com.lab.services.StorageService;
 
 import java.util.Random;
 
-public class GameActivity extends AppCompatActivity {
+public class GameFragment extends Fragment {
 
     public final static String KEY_GUESSED_WORDS = "KEY_GUESSED_WORDS";
     public final static String KEY_START_TIME = "KEY_START_TIME";
@@ -25,13 +37,16 @@ public class GameActivity extends AppCompatActivity {
     public final static String KEY_LETTERS_WORD = "KEY_LETTERS_WORD";
     public final static String KEY_CORRECT_LETTERS = "KEY_CORRECT_LETTERS";
 
+    private StorageService storageService;
+    boolean cashed = false;
+
     private int minws_c = 0;
     private int maxws_c = 0;
     private int gamet_c = 0;
 
-    private int minws_v;
-    private int maxws_v;
-    private int gamet_v;
+    private int minws_a[];
+    private int maxws_a[];
+    private int gamet_a[];
 
     private String words_a[];
     private Random random = new Random();
@@ -44,8 +59,8 @@ public class GameActivity extends AppCompatActivity {
     LetterAddapter.OnClickListener line_1_ocl;
     LetterAddapter.OnClickListener line_2_ocl;
 
-    Letter letters_pool[];
-    Letter letters_word[];
+    Letter letters_pool[] = new Letter[0];
+    Letter letters_word[] = new Letter[0];;
 
     private long startTime = 0;
     private int correct_letters = 0;
@@ -59,49 +74,92 @@ public class GameActivity extends AppCompatActivity {
         public void run() {
             long millis = System.currentTimeMillis() - startTime;
             int seconds = (int) (millis / 1000);
-            seconds = gamet_v - seconds;
+            seconds = gamet_a[gamet_c]*60 - seconds;
             if(seconds > 0) {
                 time_left.setText(getString(R.string.n_s, seconds));
                 timerHandler.postDelayed(this, 500);
             } else {
                 time_left.setText(getString(R.string.n_s, 0));
-                final AlertDialog ad = new AlertDialog.Builder(GameActivity.this)
+                final AlertDialog ad = new AlertDialog.Builder(getActivity())
                         .setMessage(getString(R.string.n_guessed_words, words_g))
                         .setPositiveButton(R.string.yes, null)
-                        .setOnDismissListener(dialogInterface -> GameActivity.this.finish())
                         .show();
-
+                getActivity().onBackPressed();
             }
         }
     };
 
+    public static GameFragment newInstance() {
+        return new GameFragment();
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_game, container, false);
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         restoreData(savedInstanceState);
-
         initResources();
-        initGuessedWords();
-        initLines();
-
-        if(savedInstanceState == null)
-            newWord();
-        Letter.null_letter = getString(R.string.null_letter);
+        initGuessedWords(v);
+        initLines(v);
+        initTimer(v);
         redrawLeters();
+        Letter.null_letter = getString(R.string.null_letter);
+    }
 
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            storageService = ((StorageService.StorageServiceBinder) iBinder).getService();
+            if(storageService != null) {
+                words_a = storageService.getStringArray(StorageService.GameSettings.KEY_WORDS);
+                if (words_a.length == 0) {
+                    words_a = getResources().getStringArray(R.array.words);
+                    storageService.putStringArray(StorageService.GameSettings.KEY_WORDS, words_a);
+                    storageService.saveStorageData();
+                }
+                if (!cashed) {
+                    minws_c = storageService.getInt(StorageService.GameSettings.KEY_MIN_WORD_SIZE, 0);
+                    maxws_c = storageService.getInt(StorageService.GameSettings.KEY_MAX_WORD_SIZE, 0);
+                    gamet_c = storageService.getInt(StorageService.GameSettings.KEY_GAME_TIME, 0);
+                    newWord();
+                    cashed = true;
+                }
+                initGame();
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            storageService = null;
+        }
+    };
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Intent intent = new Intent(getActivity(), StorageService.class);
+        getActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        getActivity().unbindService(serviceConnection);
+    }
+
+    private void initGame(){
+        redrawLeters();
         startTimer();
     }
 
     private void restoreData(Bundle savedInstanceState){
+
         if(savedInstanceState != null){
-            if(savedInstanceState.containsKey(SettingsActivity.KEY_MIN_WORD_SIZE))
-                minws_c = savedInstanceState.getInt(SettingsActivity.KEY_MIN_WORD_SIZE);
-            if(savedInstanceState.containsKey(SettingsActivity.KEY_MAX_WORD_SIZE))
-                maxws_c = savedInstanceState.getInt(SettingsActivity.KEY_MAX_WORD_SIZE);
-            if(savedInstanceState.containsKey(SettingsActivity.KEY_GAME_TIME))
-                gamet_c = savedInstanceState.getInt(SettingsActivity.KEY_GAME_TIME);
             if(savedInstanceState.containsKey(KEY_START_TIME))
                 startTime = savedInstanceState.getLong(KEY_START_TIME);
             if(savedInstanceState.containsKey(KEY_LETTERS_POOL))
@@ -110,58 +168,42 @@ public class GameActivity extends AppCompatActivity {
                 letters_word = (Letter[]) savedInstanceState.getParcelableArray(KEY_LETTERS_WORD);
             if(savedInstanceState.containsKey(KEY_CORRECT_LETTERS))
                 correct_letters = savedInstanceState.getInt(KEY_CORRECT_LETTERS);
-        } else {
-            Intent data = getIntent();
-            if(data.hasExtra(SettingsActivity.KEY_MIN_WORD_SIZE))
-                minws_c = data.getIntExtra(SettingsActivity.KEY_MIN_WORD_SIZE, 0);
-            if(data.hasExtra(SettingsActivity.KEY_MAX_WORD_SIZE))
-                maxws_c = data.getIntExtra(SettingsActivity.KEY_MAX_WORD_SIZE, 0);
-            if(data.hasExtra(SettingsActivity.KEY_GAME_TIME))
-                gamet_c = data.getIntExtra(SettingsActivity.KEY_GAME_TIME, 0);
+            cashed = true;
         }
-    }
-
-    private void storeData(Bundle outState){
-        outState.putInt(SettingsActivity.KEY_MIN_WORD_SIZE, minws_c);
-        outState.putInt(SettingsActivity.KEY_MAX_WORD_SIZE, maxws_c);
-        outState.putInt(SettingsActivity.KEY_GAME_TIME, gamet_c);
-        outState.putLong(KEY_START_TIME, startTime);
-        outState.putLong(KEY_GUESSED_WORDS, words_g);
-        outState.putParcelableArray(KEY_LETTERS_POOL, letters_pool);
-        outState.putParcelableArray(KEY_LETTERS_WORD, letters_word);
-        outState.putInt(KEY_CORRECT_LETTERS, correct_letters);
     }
 
     private void startTimer(){
         if(startTime == 0)
             startTime = System.currentTimeMillis();
-        time_left = findViewById(R.id.time_left);
         timerHandler.postDelayed(timerRunnable, 0);
     }
 
-    private void initGuessedWords(){
-        guessed_words = findViewById(R.id.guessed_words);
+    private void initTimer(View v){
+        time_left = v.findViewById(R.id.time_left);
+    }
+
+    private void initGuessedWords(View v){
+        guessed_words = v.findViewById(R.id.guessed_words);
         updateGuessedWords();
     }
 
     private void initResources(){
-        minws_v = getResources().getIntArray(R.array.min_word_size)[minws_c];
-        maxws_v = getResources().getIntArray(R.array.max_word_size)[maxws_c];
-        gamet_v = getResources().getIntArray(R.array.game_time)[gamet_c] * 60;
-        words_a = getResources().getStringArray(R.array.words);
+        minws_a = getResources().getIntArray(R.array.min_word_size);
+        maxws_a = getResources().getIntArray(R.array.max_word_size);
+        gamet_a = getResources().getIntArray(R.array.game_time);
     }
 
-    private void initLines(){
-        line_1 = findViewById(R.id.line_1);
-        line_2 = findViewById(R.id.line_2);
+    private void initLines(View v){
+        line_1 = v.findViewById(R.id.line_1);
+        line_2 = v.findViewById(R.id.line_2);
 
-        LinearLayoutManager layoutManager1= new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
-        LinearLayoutManager layoutManager2= new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager layoutManager1= new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager layoutManager2= new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL, false);
 
         line_1.setLayoutManager(layoutManager1);
         line_2.setLayoutManager(layoutManager2);
 
-        line_1_ocl = (v, pp) -> {
+        line_1_ocl = (view, pp) -> {
             if(letters_pool[pp].v) {
                 int pw = 0;
 
@@ -181,7 +223,7 @@ public class GameActivity extends AppCompatActivity {
 
                 if(correct_letters == letters_pool.length){
                     words_g++;
-                    Toast.makeText(this, R.string.guessed, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.guessed, Toast.LENGTH_SHORT).show();
                     updateGuessedWords();
                     newWord();
                     redrawLeters();
@@ -193,7 +235,7 @@ public class GameActivity extends AppCompatActivity {
             }
         };
 
-        line_2_ocl = (v, pw) -> {
+        line_2_ocl = (view, pw) -> {
             if(letters_word[pw].v) {
                 int pp = letters_word[pw].p;
 
@@ -244,25 +286,31 @@ public class GameActivity extends AppCompatActivity {
         String word = "";
         do{
             word = words_a[random.nextInt(words_a.length)];
-        }while(word.length() > maxws_v || word.length() < minws_v);
+        }while(word.length() > maxws_a[maxws_c] || word.length() < minws_a[minws_c]);
         return word;
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         timerHandler.removeCallbacks(timerRunnable);
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
-        timerHandler.postDelayed(timerRunnable, 0);
+        if(startTime != 0)
+            timerHandler.postDelayed(timerRunnable, 0);
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        storeData(outState);
+        outState.putLong(KEY_START_TIME, startTime);
+        outState.putLong(KEY_GUESSED_WORDS, words_g);
+        outState.putParcelableArray(KEY_LETTERS_POOL, letters_pool);
+        outState.putParcelableArray(KEY_LETTERS_WORD, letters_word);
+        outState.putInt(KEY_CORRECT_LETTERS, correct_letters);
     }
+
 }
