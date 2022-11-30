@@ -2,4 +2,7 @@
 <resources>
     <dimen name="menu_textsize">20sp</dimen>
     <dimen name="manu_btn_padding">10dp</dimen>
+    <dimen name="manu_btn_margin">30dp</dimen>
+    <dimen name="padding_between_elements">10dp</dimen>
+    <dimen name="big_text">40sp</dimen>
 </resources>

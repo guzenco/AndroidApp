@@ -14,9 +14,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|top"
         tools:text="@string/n_s"
-        android:paddingTop="10dp"
+        android:paddingTop="@dimen/padding_between_elements"
         android:textColor="@color/time_left"
-        android:textSize="40sp"/>
+        android:textSize="@dimen/big_text"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="@string/guessed_words"
-            android:textSize="20sp"/>
+            android:textSize="@dimen/menu_textsize"/>
         <TextView
             android:id="@+id/guessed_words"
             android:layout_width="wrap_content"
@@ -38,7 +38,7 @@
             android:layout_centerHorizontal="true"
             tools:text="@string/n_words"
             android:textColor="@color/n_words"
-            android:textSize="40sp"/>
+            android:textSize="@dimen/big_text"/>
 
     </RelativeLayout>>
 

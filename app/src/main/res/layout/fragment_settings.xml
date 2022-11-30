@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/min_word_size_tv"
                 android:layout_centerHorizontal="true"
-                android:paddingBottom="10dp"
+                android:paddingBottom="@dimen/padding_between_elements"
                 android:orientation="horizontal">
                 <RadioButton
                     android:layout_width="wrap_content"
@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/max_word_size_tv"
                 android:layout_centerHorizontal="true"
-                android:paddingBottom="10dp"
+                android:paddingBottom="@dimen/padding_between_elements"
                 android:orientation="horizontal">
                 <RadioButton
                     android:layout_width="wrap_content"
@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/game_time_tv"
                 android:layout_centerHorizontal="true"
-                android:paddingBottom="10dp"
+                android:paddingBottom="@dimen/padding_between_elements"
                 android:orientation="horizontal">
                 <RadioButton
                     android:layout_width="wrap_content"

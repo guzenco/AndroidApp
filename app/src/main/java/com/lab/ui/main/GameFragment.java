@@ -122,10 +122,10 @@ public class GameFragment extends Fragment {
                     storageService.putStringArray(StorageService.GameSettings.KEY_WORDS, words_a);
                     storageService.saveStorageData();
                 }
+                minws_c = storageService.getInt(StorageService.GameSettings.KEY_MIN_WORD_SIZE, 0);
+                maxws_c = storageService.getInt(StorageService.GameSettings.KEY_MAX_WORD_SIZE, 0);
+                gamet_c = storageService.getInt(StorageService.GameSettings.KEY_GAME_TIME, 0);
                 if (!cashed) {
-                    minws_c = storageService.getInt(StorageService.GameSettings.KEY_MIN_WORD_SIZE, 0);
-                    maxws_c = storageService.getInt(StorageService.GameSettings.KEY_MAX_WORD_SIZE, 0);
-                    gamet_c = storageService.getInt(StorageService.GameSettings.KEY_GAME_TIME, 0);
                     newWord();
                     cashed = true;
                 }
