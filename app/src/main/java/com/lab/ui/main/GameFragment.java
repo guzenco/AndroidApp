@@ -25,19 +25,23 @@ import android.widget.Toast;
 import com.lab.R;
 import com.lab.objects.Letter;
 import com.lab.objects.LetterAddapter;
-import com.lab.services.StorageService;
+import com.lab.storage.Storage;
+import com.lab.storage.StorageTaskManagerFragment;
 
 import java.util.Random;
 
 public class GameFragment extends Fragment {
 
+    public final static String TAG = GameFragment.class.getName();
     public final static String KEY_GUESSED_WORDS = "KEY_GUESSED_WORDS";
     public final static String KEY_START_TIME = "KEY_START_TIME";
     public final static String KEY_LETTERS_POOL = "KEY_LETTERS_POOL";
     public final static String KEY_LETTERS_WORD = "KEY_LETTERS_WORD";
     public final static String KEY_CORRECT_LETTERS = "KEY_CORRECT_LETTERS";
+    public final static String TASK_LOAD_SETTINGS = TAG + "_TASK_LOAD_SETTINGS";
 
-    private StorageService storageService;
+    private StorageTaskManagerFragment storageTM;
+
     boolean cashed = false;
 
     private int minws_c = 0;
@@ -102,7 +106,9 @@ public class GameFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View v, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(v, savedInstanceState);
+        storageTM = (StorageTaskManagerFragment) getFragmentManager().findFragmentByTag(StorageTaskManagerFragment.TAG);
         restoreData(savedInstanceState);
+        loadDataFromStorage();
         initResources();
         initGuessedWords(v);
         initLines(v);
@@ -111,45 +117,40 @@ public class GameFragment extends Fragment {
         Letter.null_letter = getString(R.string.null_letter);
     }
 
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            storageService = ((StorageService.StorageServiceBinder) iBinder).getService();
-            if(storageService != null) {
-                words_a = storageService.getStringArray(StorageService.GameSettings.KEY_WORDS);
-                if (words_a.length == 0) {
-                    words_a = getResources().getStringArray(R.array.words);
-                    storageService.putStringArray(StorageService.GameSettings.KEY_WORDS, words_a);
-                    storageService.saveStorageData();
-                }
-                minws_c = storageService.getInt(StorageService.GameSettings.KEY_MIN_WORD_SIZE, 0);
-                maxws_c = storageService.getInt(StorageService.GameSettings.KEY_MAX_WORD_SIZE, 0);
-                gamet_c = storageService.getInt(StorageService.GameSettings.KEY_GAME_TIME, 0);
-                if (!cashed) {
-                    newWord();
-                    cashed = true;
-                }
-                initGame();
-            }
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            storageService = null;
-        }
-    };
+     private void loadDataFromStorage() {
+         storageTM.newTask(
+                 TASK_LOAD_SETTINGS,
+                 (storage) -> {
+                     if (storage != null) {
+                         words_a = storage.getStringArray(Storage.GameSettings.KEY_WORDS);
+                         if (words_a.length == 0) {
+                             words_a = getResources().getStringArray(R.array.words);
+                             storage.putStringArray(Storage.GameSettings.KEY_WORDS, words_a);
+                             storage.saveStorageData();
+                         }
+                         minws_c = storage.getInt(Storage.GameSettings.KEY_MIN_WORD_SIZE, 0);
+                         maxws_c = storage.getInt(Storage.GameSettings.KEY_MAX_WORD_SIZE, 0);
+                         gamet_c = storage.getInt(Storage.GameSettings.KEY_GAME_TIME, 0);
+                     }
+                 },
+                 () -> {
+                     if (!cashed) {
+                         newWord();
+                         cashed = true;
+                     }
+                     initGame();
+                 }
+         );
+     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Intent intent = new Intent(getActivity(), StorageService.class);
-        getActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        getActivity().unbindService(serviceConnection);
     }
 
     private void initGame(){
@@ -158,7 +159,6 @@ public class GameFragment extends Fragment {
     }
 
     private void restoreData(Bundle savedInstanceState){
-
         if(savedInstanceState != null){
             if(savedInstanceState.containsKey(KEY_START_TIME))
                 startTime = savedInstanceState.getLong(KEY_START_TIME);
