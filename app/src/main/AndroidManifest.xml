@@ -12,10 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Lab"
         tools:targetApi="31">
-        <service
-            android:name=".services.StorageService"
-            android:enabled="true"
-            android:exported="true"></service>
 
         <activity
             android:name=".MainActivity"

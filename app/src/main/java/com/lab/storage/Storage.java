@@ -1,31 +1,20 @@
-package com.lab.services;
+package com.lab.storage;
 
-import android.app.Service;
-import android.content.Intent;
+import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Binder;
-import android.os.IBinder;
 import android.preference.PreferenceManager;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class StorageService extends Service {
+public class Storage {
 
-    private StorageServiceBinder binder = new StorageServiceBinder();
     private SharedPreferences.Editor editor;
     SharedPreferences sprefs;
 
-    @Override
-    public void onCreate() {
-        sprefs = PreferenceManager.getDefaultSharedPreferences(this);
-        super.onCreate();
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return binder;
+    public Storage(Context context) {
+        sprefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     public int getInt(String key, int d){
@@ -57,16 +46,6 @@ public class StorageService extends Service {
         editor.apply();
         editor = null;
         return true;
-    }
-
-    public SharedPreferences.Editor getEditor(){
-        return sprefs.edit();
-    }
-
-    public class StorageServiceBinder extends Binder {
-        public StorageService getService(){
-            return StorageService.this;
-        }
     }
 
     public final static class GameSettings{
