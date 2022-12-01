@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import com.lab.storage.StorageTaskManagerFragment;
 import com.lab.ui.main.MainFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -16,7 +15,6 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, MainFragment.newInstance())
-                    .add(new StorageTaskManagerFragment(), StorageTaskManagerFragment.TAG)
                     .commitNow();
         }
     }
