@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.lab.R;
 import com.lab.model.Meteor;
@@ -37,12 +38,14 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main, container, false);
+        return inflater.inflate(R.layout.fragment_list, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View v, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(v, savedInstanceState);
+        TextView name = v.findViewById(R.id.name);
+        name.setText(R.string.meteors);
         list = v.findViewById(R.id.list);
         mViewModel.getMeteors().observe(getViewLifecycleOwner(), this::onMeteorsChanged);
     }
