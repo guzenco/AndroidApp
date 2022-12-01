@@ -7,9 +7,6 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="button_color">#BBBBBB</color>
-    <color name="background">#AAAAAA</color>
-    <color name="text">#555555</color>
-    <color name="n_words">#009900</color>
-    <color name="time_left">#990000</color>
+    <color name="header_background">#444444</color>
+    <color name="header_text_color">#FFFFFF</color>
 </resources>
