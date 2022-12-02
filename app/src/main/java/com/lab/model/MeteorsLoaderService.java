@@ -49,7 +49,7 @@ public class MeteorsLoaderService {
                         Meteor[] m = response.body();
                         executorService.submit(() -> callback.onResponse(m));
                         if(!Arrays.equals(m, m_cashed)){
-                            executorService.submit(() -> meteorsDao.insert(m));
+                            executorService.submit(() -> meteorsDao.updateMeteors(m));
                         }
                     }else {
                         executorService.submit(() -> callback.onResponse(meteorsDao.getMeteors()));
