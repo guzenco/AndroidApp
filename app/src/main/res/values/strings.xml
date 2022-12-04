@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">BluetoothCodecAutoChange</string>
+    <string name="set">Set</string>
+    <string name="device_not_connected">Device not connected</string>
+    <string name="device">Device</string>
+    <string name="codec">Codec</string>
+    <string name="sample_rate">Sample rate</string>
+    <string name="bits_per_sample">Bits per sample</string>
+    <string name="channel_mode">Channel mode</string>
+    <string name="unknown">Unknown</string>
+    <string name="codec_setted">Codec setted!</string>
+    <string name="trying_to_set">Trying to set...</string>
+</resources>
