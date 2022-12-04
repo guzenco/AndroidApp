@@ -240,8 +240,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             BluetoothCodecStatus status = intent.getParcelableExtra(BluetoothCodecStatus.EXTRA_CODEC_STATUS);
+            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
             if(status != null){
-                if(!status.equals(bstatus)) {
+                if(!status.equals(bstatus) && device != null && device.equals(bdevice)) {
                     bstatus = status;
                     bconfig = status.getCodecConfig();
                     update(BluetoothA2dp.STATE_CONNECTED);
@@ -249,7 +250,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else {
                 int state = intent.getIntExtra(BluetoothA2dp.EXTRA_STATE, 0);
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 int blevel = BluetoothA2dpTool.tool.getBluetoothDeviceBatteryLevel(device);
                 if (blevel == -1)
                     state = 0;
