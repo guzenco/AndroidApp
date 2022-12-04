@@ -2,37 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-sdk android:minSdkVersion="28" android:targetSdkVersion="32"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30"/>
-    <queries>
-    <intent>
-        <action android:name="android.intent.action.SENDTO"/>
-        <data android:scheme="mailto"/>
-    </intent>
-    </queries>>
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:allowBackup="true"
-
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.BluetoothCodecAutoChange"
-        tools:targetApi="32">
-        <receiver
-            android:name=".BluetoothDeciveConnectionReciver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED" >
-                </action>
-            </intent-filter>
-        </receiver>
-
+        android:theme="@style/Theme.Lab"
+        tools:targetApi="31">
 
         <activity
             android:name=".MainActivity"

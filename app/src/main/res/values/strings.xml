@@ -1,13 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">BluetoothCodecAutoChange</string>
-    <string name="set">Set</string>
-    <string name="device_not_connected">Device not connected</string>
-    <string name="device">Device</string>
-    <string name="codec">Codec</string>
-    <string name="sample_rate">Sample rate</string>
-    <string name="bits_per_sample">Bits per sample</string>
-    <string name="channel_mode">Channel mode</string>
-    <string name="unknown">Unknown</string>
-    <string name="codec_setted">Codec setted!</string>
-    <string name="trying_to_set">Trying to set...</string>
+    <string name="app_name">Лабораторна робота №4</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="meteor_year">Year:\n%1$s</string>
+    <string name="meteor_fall">Fall:\n%1$s</string>
+    <string name="meteor_reclass">Recclass:\n%1$s</string>
+    <string name="meteor_mass">Mass:\n%1$.2f</string>
+    <string name="meteors">Meteors</string>
 </resources>
