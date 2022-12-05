@@ -119,25 +119,31 @@ public class MainActivity extends AppCompatActivity {
 
         item = new HashMap() {{
             put(ITEM_NAME, getString(R.string.sample_rate));
-            put(ITEM_DATA, sample_rate_names[bconfig.getSampleRate()]);
+            put(ITEM_DATA, sample_rate_names[bitPosition(bconfig.getSampleRate())]);
         }};
         arrayList.add(item);
 
         item = new HashMap() {{
             put(ITEM_NAME, getString(R.string.bits_per_sample));
-            put(ITEM_DATA, bits_per_sample_names[bconfig.getBitsPerSample()]);
+            put(ITEM_DATA, bits_per_sample_names[bitPosition(bconfig.getBitsPerSample())]);
         }};
         arrayList.add(item);
 
         item = new HashMap() {{
             put(ITEM_NAME, getString(R.string.channel_mode));
-            put(ITEM_DATA, channel_mode_names[bconfig.getChannelMode()]);
+            put(ITEM_DATA, channel_mode_names[bitPosition(bconfig.getChannelMode())]);
         }};
         arrayList.add(item);
         SimpleAdapter adapter = new SimpleAdapter(this, arrayList, android.R.layout.simple_list_item_2,
                 new String[]{ITEM_NAME, ITEM_DATA},
                 new int[]{android.R.id.text1, android.R.id.text2});
         menu.setAdapter(adapter);
+    }
+
+    private int bitPosition(int x){
+        if(x < 1)
+            return 0;
+        return (int) Math.round(Math.log(x) / Math.log(2)) + 1;
     }
 
     private void load(){

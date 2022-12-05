@@ -5,17 +5,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.google.gson.Gson;
-
 public class StorageService {
 
     private SharedPreferences.Editor editor;
     private SharedPreferences sprefs;
-    private Gson gson;
 
     public StorageService(Context context) {
         sprefs = PreferenceManager.getDefaultSharedPreferences(context);
-        gson = new Gson();
     }
 
     public BluetoothCodecConfig getBluetoothCodecConfig(String key){
